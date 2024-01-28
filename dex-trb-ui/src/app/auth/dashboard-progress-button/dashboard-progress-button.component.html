@@ -1,0 +1,69 @@
+<div class="container">
+    <button *ngIf="isAdminRole" (click)="navigateToAllocation('YET_TO_ALLOCATE')" class="btn btn-1">
+        <div class="row">
+            <div class="col-2 mt-3">
+                <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="col-8">
+                <mat-label class="number">{{yetToAllocate}}</mat-label><br>
+                <mat-label>Yet to allocate</mat-label>
+            </div>
+            <div class="col-2 mt-3">
+                <mat-icon>forward</mat-icon>
+            </div>
+        </div>
+    </button>
+    <button *ngIf="isSMERole" [disabled]="allocatedQuestions=='0'" (click)="navigateToApproval('')" class="btn btn-1">
+        <div class="row">
+            <div class="col-2 mt-3">
+                <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="col-8">
+                <mat-label class="number">{{allocatedQuestions}}</mat-label><br>
+                <mat-label>AllocatedQuestions</mat-label>
+            </div>
+            <div class="col-2 mt-3">
+                <mat-icon>forward</mat-icon>
+            </div>
+        </div>
+    </button>
+    <button [disabled]="pendingApproval=='0'" (click)="navigateToApproval('PENDING_APPROVAL')" class="btn btn-4">
+        <div class="row">
+            <div class="col-2 mt-3">
+                <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="col-8">
+                <mat-label class="number">{{pendingApproval}}</mat-label><br>
+                <mat-label>PendingApproval</mat-label>
+            </div>
+            <div class="col-2 mt-3">
+                <mat-icon>forward</mat-icon>
+            </div>
+        </div>
+    </button>
+    <button [disabled]="approved=='0'" (click)="navigateToApproval('APPROVED')" class="btn btn-2">
+        <div class="row">
+            <div class="col-2 mt-3">
+                <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="col-8">
+                <mat-label class="number">{{approved}}</mat-label><br>
+                <mat-label>Approved</mat-label>
+            </div>
+            <div class="col-2 mt-3">
+                <mat-icon>forward</mat-icon>
+            </div>
+        </div>
+    </button>
+    <button [disabled]="rejected=='0'" (click)="navigateToApproval('REJECTED')" class="btn btn-3">
+        <div class="row">
+            <div class="col-2 mt-3">
+                <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="col-8">
+                <mat-label class="number">{{rejected}}</mat-label><br>
+                <mat-label>Rejected</mat-label>
+            </div>
+        </div>
+    </button>
+</div>

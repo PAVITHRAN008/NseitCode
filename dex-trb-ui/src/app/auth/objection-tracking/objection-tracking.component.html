@@ -1,0 +1,54 @@
+<div class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Objection Tracking"></app-title-header>
+    <app-user-input-field titleHeader="Objection Tracking" (sendDataToChild)="getChildFormData($event)">
+    </app-user-input-field>
+    <div
+        style="border: 1px solid rgb(172, 168, 168);padding:0% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px;margin-top: 30px; background-color: #FFFF;">
+        <div class="row">
+            <div class="col-6 mt-3">
+                <app-table-title-header tableHeader="Question List"></app-table-title-header>
+            </div>
+            <div class="col-6 mt-2">
+                <div class="float-end">
+                    <mat-form-field appearance="outline">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <mat-label>Search</mat-label>
+                        <input matInput (keyup)="applyFilterOne($event)" placeholder="Search here..." />
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <mat-table [dataSource]="dataSource" matSort #TableOneSort="matSort" class="mat-elevation-z8"
+            style="width: 100%; box-shadow: 0px 0px 1px 1px lightgrey;">
+            <ng-container matColumnDef="sNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>S.No</mat-header-cell>>
+                <mat-cell *matCellDef="let rowSNo; let i = index;">{{i+1}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="questions">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Questions for {{selectedSubject}} </mat-header-cell>
+                <mat-cell *matCellDef="let rowQuestions"> {{rowQuestions.questions}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="smeName">
+                <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header> SME Name</mat-header-cell>
+                <mat-cell *matCellDef="let rowSmeName"> {{rowSmeName.smeName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+                <mat-cell *matCellDef="let rowStatus">
+                    <button mat-raised-button (click)="viewObjectionDetails(rowStatus)"
+                        [ngClass]="{'success ':rowStatus.status=='Approved','failed': rowStatus.status=='Rejected', 'default': rowStatus.status=='Yet to approve'}">{{rowStatus.status}}
+                        <mat-icon inline="true" class="float-end">{{rowStatus.status=="Yet to approve"?
+                            'arrow_forward_ios': rowStatus.status=="Approved" ? 'check_circle_outline':'close'}}
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumnsOne"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumnsOne"></mat-row>
+        </mat-table>
+        <mat-paginator #TableOnePaginator="matPaginator" [ngStyle]="{'color':'blue'}" [pageSize]="3"
+            [pageSizeOptions]="[3,5, 10, 25, 100]">
+        </mat-paginator>
+    </div>
+</div>

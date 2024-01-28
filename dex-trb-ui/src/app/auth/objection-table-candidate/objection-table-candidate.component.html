@@ -1,0 +1,85 @@
+<div class="mt-2">
+    <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"> -->
+    <mat-expansion-panel (opened)="panelOpenState" [expanded]="fromFinalObjection">
+        <mat-expansion-panel-header style="height: auto;">
+            <mat-panel-title>
+                <div class="col-6 mt-3" style="padding:10px 10px 0px 10px ">
+                    <app-table-title-header tableHeader="List of objection by candidate">
+                    </app-table-title-header>
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div
+            style="border: 1px solid rgb(172, 168, 168);padding:1% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px; background-color: #FFFF;">
+            <div class="col-12" *ngIf="!fromFinalObjection">
+                <div class="float-end">
+                    <mat-form-field appearance="outline">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <mat-label>Search</mat-label>
+                        <input matInput (keyup)="applyFilter($event)" placeholder="Search here..." />
+                    </mat-form-field>
+                </div>
+            </div>
+            <table mat-table [dataSource]="dataSource" matSortStart="desc" class="mat-elevation-z8" style="width: 100%;"
+                matSort>
+
+                <ng-container matColumnDef="sNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> S.No </th>
+                    <td mat-cell *matCellDef="let row"> {{row.sNo}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="qtpCandAns">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Candidate Answer </th>
+                    <td mat-cell *matCellDef="let row"> {{row.qtpCandAns}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="objectionType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Objection Type </th>
+                    <td mat-cell *matCellDef="let row"> {{row.objectionType}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="objectionText">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Objection Text</th>
+                    <td mat-cell class="col-width-500" *matCellDef="let row"> {{row.objectionText}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="standard">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Standard </th>
+                    <td mat-cell *matCellDef="let row">{{row.standard}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="subject">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject </th>
+                    <td mat-cell *matCellDef="let row">{{row.subject}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="bookPageNo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Page No </th>
+                    <td mat-cell *matCellDef="let row"> {{row.bookPageNo}} </td>
+                </ng-container>
+
+                <ng-container *ngIf="!fromFinalObjection" matColumnDef="documents">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="example-button-container">
+                            <button (click)="fileDownload(element.fileName)" mat-icon-button color="primary">
+                                <mat-icon matTooltip="Download {{element.fileName}}">file_copy</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="fromFinalObjection" matColumnDef="documents">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents</th>
+                    <td mat-cell *matCellDef="let row">{{row.fileName}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                </tr>
+            </table>
+            <mat-paginator *ngIf="pathObjTracking" #TablePaginator="matPaginator" [ngStyle]="{'color':'blue'}"
+                [pageSize]="3" [pageSizeOptions]="[3, 5, 6, 10, 20]">
+            </mat-paginator>
+        </div>
+    </mat-expansion-panel>
+</div>

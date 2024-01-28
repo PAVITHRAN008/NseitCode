@@ -1,0 +1,122 @@
+pipeline {
+		agent {
+			node{
+				label 'angular'
+				//customWorkspace "workspace/${env.JOB_NAME}"
+			}
+		}
+		//triggers {
+		// if we need to triger the job everyday at some time
+		//pollSCM 'H 15 * * *'
+		//	issueCommentTrigger(triggerExpression)
+		//}
+		environment {
+			GITHUB_TOKEN = credentials('bhaskar-credentials')
+		}
+		options {
+			timestamps() 
+			buildDiscarder(logRotator(artifactDaysToKeepStr: '30', artifactNumToKeepStr: '5', daysToKeepStr: '30', numToKeepStr: '5'))
+		}
+		
+		stages {
+			
+			stage('Build') {
+				steps {
+					sh 'npm install --save @angular-devkit/build-angular --force'
+					sh 'ng build --aot --base-href="."'
+				}
+			}
+			 stage('Unit Test') { 
+				steps {
+					
+						echo "to run the test cases "
+						}
+						
+			 }
+			
+			/*stage('Sonar-Analysis'){
+				steps{
+
+					   //echo "sonar pass"
+					 sh 'chmod 755 sonarScan.sh'
+					 sh './sonarScan.sh'
+				}
+			}*/
+			 
+			stage('Artifactory Upload') {
+			/*	when{
+					beforeAgent true
+					branch 'main'
+				}*/
+				steps {
+					
+					   echo "artifactoryPush1"
+				}
+			} 
+			stage('Build Docker Image') {
+			/*	when{
+					beforeAgent true
+					branch 'main'	
+				} */
+				steps{
+					sh 'docker build . -f Dockerfile -t 172.18.20.44:5000/trb-ot-ui:1.0-$BUILD_NUMBER'
+				}
+			}
+			stage('Tag & Push Image') {
+			/*	when{
+					beforeAgent true
+					branch 'main'	
+				} */
+				steps{
+						sh 'docker push 172.18.20.44:5000/trb-ot-ui:1.0-$BUILD_NUMBER'
+						sh 'docker rmi 172.18.20.44:5000/trb-ot-ui:1.0-$BUILD_NUMBER'
+				}
+			}
+			
+			 /*stage('Deploy Dev Env') {
+				when{
+					beforeAgent true
+					branch 'main'
+				}
+				steps{
+					sh "sed -i -e 's/BUILD_NUMBER/${BUILD_NUMBER}/g' deploydev.sh"
+					sh '''
+						chmod 755 deploydev.sh
+						scp -r deploydev.sh root@172.18.21.53:/tmp/
+						ssh root@172.18.21.53 "sh /tmp/deploydev.sh && rm -rf /tmp/deploydev.sh"
+						'''
+					
+				}
+			}*/
+			/*stage('Deploy to TRB Env') {
+				when{
+					beforeAgent true
+					branch 'main'	
+				}
+				steps{
+					sh "sed -i -e 's/BUILD_NUMBER/${BUILD_NUMBER}/g' deploytrb.sh"
+              sh '''
+						chmod 755 deploytrb.sh
+						scp -r deploytrb.sh root@172.18.21.105:/tmp/
+						ssh root@172.18.21.105 "sh /tmp/deploytrb.sh && rm -rf /tmp/deploytrb.sh"
+						'''
+
+					//	sh ' ssh root@172.18.20.44 "docker kill candidate && docker rm candidate" '
+					//	sh ''' ssh root@172.18.20.44 "docker run -itd -p 9091:8081 --name candidate 172.18.20.44:5000/candidate:1.0-$BUILD_NUMBER" '''
+				}
+			}*/
+			 
+		}
+		post {
+			 always {
+				cleanWs deleteDirs: true
+				dir("${env.WORKSPACE}@tmp") {
+					deleteDir()
+				} 
+				emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+					recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+					to: "bhaskard@nseit.com,${env.BUILD_USER_EMAIL}",
+					subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+			}
+		}
+	}

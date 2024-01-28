@@ -1,0 +1,25 @@
+.edit {
+    display: flex;
+    flex-direction: row;
+    gap: 20px
+}
+
+.example-button-row {
+    display: table-cell;
+    float: right
+}
+
+.example-button-row .mat-button-base {
+    margin: 8px 8px 8px 0;
+    float: right;
+}
+
+::ng-deep {
+    .mat-form-field .mat-form-field-infix {
+        padding: 10px;
+    }
+}
+
+.disable {
+    color: grey
+}

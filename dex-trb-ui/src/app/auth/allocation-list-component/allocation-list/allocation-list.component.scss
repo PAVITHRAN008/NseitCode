@@ -1,0 +1,53 @@
+td.cell-width-150 {
+  width: 150px;
+}
+
+th.cell-width-150 {
+  width: 150px;
+}
+
+.example-button-row {
+  display: table-cell;
+}
+
+.example-button-row .mat-button-base {
+  margin: 8px 8px 8px 0;
+  float: right;
+}
+
+.mat-column-checkbox {
+  flex: 0 0 10%;
+}
+
+.mat-column-questions {
+  flex: 0 0 50%;
+}
+
+.failed {
+  background-color: #c10000ad !important;
+}
+
+
+.yet_btn {
+  color: white;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.export_btn {
+  border-radius: 3px;
+  padding: 5px 18px;
+  height: 38px;
+  font-size: 15px;
+  line-height: 25px;
+  width: auto;
+  margin-top: 7px;
+}
+
+td.mat-cell {
+  padding-right: 15px;
+}
+img:hover {
+  -webkit-transform: scale(2,2);
+}

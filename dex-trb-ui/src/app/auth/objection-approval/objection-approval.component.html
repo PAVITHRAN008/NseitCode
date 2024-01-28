@@ -1,0 +1,102 @@
+<div class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Objection Approval"></app-title-header>
+    <app-user-input-field titleHeader="Objection Approval" (sendDataToChild)="getChildFormData($event)">
+    </app-user-input-field>
+    <div class="card_style mt-3">
+        <ng-container *ngIf="(responseTableData?.length && !noRecordMessage); else elseTemplate">
+            <div class="row">
+                <div class="col-6 mt-3">
+                    <app-table-title-header tableHeader="Question List"></app-table-title-header>
+                </div>
+                <div class="col-6 mt-2">
+                    <div class="float-end">
+                        <mat-form-field appearance="outline">
+                            <mat-icon matPrefix>search</mat-icon>
+                            <mat-label>Search</mat-label>
+                            <input matInput (keyup)="applyFilterOne($event)" placeholder="Search here..." />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                style="width: 100%; box-shadow: 0px 0px 1px 1px lightgrey;" matTableExporter
+                #exporter="matTableExporter" matSort>
+                <ng-container matColumnDef="sNo">
+                    <th mat-header-cell class="cell-width-60" *matHeaderCellDef mat-sort-header>S.No</th>>
+                    <td mat-cell class="cell-width-60" *matCellDef="let rowSNo; let i = index;">
+                        {{rowSNo.sNo}}</td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                    <th class="cell-width-80" mat-header-cell *matHeaderCellDef mat-sort-header> Date</th>
+                    <td class="cell-width-150" mat-cell *matCellDef="let date"> {{date.date}} </td>
+                </ng-container>
+                <ng-container matColumnDef="batch">
+                    <th class="cell-width-80" mat-header-cell *matHeaderCellDef mat-sort-header> Batch</th>
+                    <td class="cell-width-150" mat-cell *matCellDef="let batch"> {{batch.batch}} </td>
+                </ng-container>
+                <ng-container matColumnDef="mdmName">
+                    <th class="cell-width-150" mat-header-cell *matHeaderCellDef mat-sort-header> Module Name</th>
+                    <td class="cell-width-150" mat-cell *matCellDef="let moduleName"> {{moduleName.mdmName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="masterQP">
+                    <th mat-header-cell class="cell-width-80" *matHeaderCellDef mat-sort-header>Master QP No</th>>
+                    <td mat-cell class="cell-width-60" *matCellDef="let rowClientId" style="text-align: center;">
+                        {{rowClientId.masterQP}}</td>
+                </ng-container>
+                <ng-container matColumnDef="questions">
+                    <th mat-header-cell class="cell-width-380" *matHeaderCellDef mat-sort-header> Questions for
+                        {{selectedSubject}} </th>
+                    <td mat-cell class="cell-width-380" *matCellDef="let rowQuestions"  [innerHTML]="rowQuestions.questions">
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="questionImage">
+                    <th mat-header-cell class="cell-width-380" *matHeaderCellDef mat-sort-header> Question Image</th>
+                    <td mat-cell class="cell-width-380" *matCellDef="let rowQuestionImage"><img *ngIf="rowQuestionImage.questionImage" style="display:block;" width="100%" height="100%" src="{{'data:image/png;base64,' + rowQuestionImage.questionImage}}" />
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="smeName">
+                    <th mat-header-cell class="cell-width-100" th *matHeaderCellDef mat-sort-header>SME Name</th>
+                    <td mat-cell class="cell-width-80" *matCellDef="let rowSmeName"> {{rowSmeName.name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="status" *ngIf="currentUserRole != USER_ROLES.ADMIN">
+                    <th mat-header-cell class="cell-width-100" *matHeaderCellDef mat-sort-header> Status</th>
+                    <td mat-cell class="cell-width-80" *matCellDef="let rowStatus">
+                        <button mat-raised-button color="primary" (click)="viewObjectionDetails(rowStatus)"
+                            [ngClass]="{'success':rowStatus.status=='APPROVED','failed': rowStatus.status=='REJECTED'}">{{rowStatus.status}}
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status" *ngIf="currentUserRole != USER_ROLES.SME">
+                    <th mat-header-cell class="cell-width-100" *matHeaderCellDef mat-sort-header> Status</th>
+                    <td mat-cell class="cell-width-80" *matCellDef="let rowStatus">
+                        <button mat-raised-button [disabled]="rowStatus.status=='PENDING_APPROVAL'"
+                            (click)="viewObjectionDetails(rowStatus)"
+                            [ngClass]="{'success ':rowStatus.status=='APPROVED','failed': rowStatus.status=='REJECTED', 'default disabled': rowStatus.status=='PENDING_APPROVAL'}">{{rowStatus.status}}
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsOne"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsOne"></tr>
+            </table>
+            <div class="row">
+                <div class="col-6 mt-3">
+                    <img matTooltip="Download Excel" (click)="importAsXlsx()" src="assets/img/downloadExcel.png"
+                        class="img" alt="excelImg">
+                </div>
+                <div class="col-6">
+                    <mat-paginator #TableOnePaginator="matPaginator" [ngStyle]="{'color':'blue'}"
+                        [pageIndex]="currentPageIndex" (page)="getData($event)" [pageSize]="currentPageSize"
+                        [pageSizeOptions]="paginateArray">
+                    </mat-paginator>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <div class="alert alert-primary" role="alert" *ngIf="noRecordMessage">
+                No Records found for this subject!
+            </div>
+            <ngx-skeleton-loader *ngIf="loader" [theme]="{'background-color': 'darkgrey'}"  count="5" appearance="line" animation="progress">
+            </ngx-skeleton-loader>
+        </ng-template>
+    </div>
+</div>

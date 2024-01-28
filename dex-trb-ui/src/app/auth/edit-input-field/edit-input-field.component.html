@@ -1,0 +1,50 @@
+<div mat-dialog-content class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Admin Management"></app-title-header>
+    <div
+        style="border: 1px solid rgb(172, 168, 168);padding:0% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px;margin-top:30px;background-color: #FFFF;">
+        <div class="row">
+            <div class="col-6 mt-3">
+                <app-table-title-header tableHeader="Edit User"></app-table-title-header>
+            </div>
+        </div>
+        <div class="row">
+            <ng-container [formGroup]="userInputForm">
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>SME No</mat-label>
+                    <input matInput formControlName="identityNumber" [readonly]='true' class="disable" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>SME Name</mat-label>
+                    <input matInput formControlName="name" onkeydown="return /[a-z]/i.test(event.key)" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>Subject</mat-label>
+                    <mat-select formControlName="subject">
+                        <mat-option *ngFor="let sub of subjectsCollection" value="{{sub}}">{{sub}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>Validity</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="expiryDate" [min]="today" />
+                    <mat-hint>DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>Username</mat-label>
+                    <input matInput formControlName="userName" [readonly]='true' class="disable" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-2">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" [readonly]='true' class="disable" />
+                </mat-form-field>
+            </ng-container>
+        </div>
+    </div>
+    <div class="example-button-row">
+        <button mat-raised-button color="primary" (click)="updateUser()">Update<mat-icon inline="true">update</mat-icon>
+        </button>
+        <button mat-raised-button class="clearBtn" mat-dialog-close>Cancel<mat-icon inline="true">clear
+            </mat-icon></button>
+    </div>
+</div>

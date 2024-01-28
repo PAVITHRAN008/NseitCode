@@ -1,0 +1,40 @@
+.mat-icon.mat-icon-inline {
+    font-size: 15px;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    color: #ffff;
+}
+
+.mat-raised-button.mat-primary.mat-button-disabled,
+.mat-raised-button.mat-button-disabled.mat-button-disabled {
+    color: #ffff;
+}
+
+.btn {
+    color: #ffff;
+    width: 173px;
+}
+
+.default {
+    background-color: #a19a9adb !important;
+    @extend .btn;
+}
+
+.success {
+    background-color: #04AA6D !important;
+    @extend .btn;
+}
+
+.failed {
+    background-color: #c10000c7 !important;
+    @extend .btn;
+}
+
+td.mat-cell {
+    padding-right: 15px;
+}
+img:hover {
+    -webkit-transform: scale(2,2);
+  }

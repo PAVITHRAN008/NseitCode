@@ -1,0 +1,170 @@
+<div class="mt-mr-mb-ml-50">
+    <div class="row">
+        <div class="col-6 mt-2">
+            <app-title-header titleHeader="Objection Tracking"></app-title-header>
+        </div>
+        <div class="col-6 mt-3 ">
+            <div class="float-end">
+                <a mat-raised-button color="primary" (click)="navToObjectionTrackApproval()">Back<mat-icon
+                        inline="true">
+                        keyboard_arrow_left</mat-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="row">
+            <div style="font-size: 16px; margin: 11px;" class="col-10 align-self-center"><span
+                    style="font-weight:500">Subject:&nbsp;</span>{{viewObjectionDetails.subject}} </div>
+            <div *ngIf="currentUserRole != USER_ROLES.SME || this.activeRowDetails.status != 'PENDING_APPROVAL'"
+                class="col-1 mt-1 ml-3 mb-2 float-end">
+                <button mat-raised-button class="approve-btn"
+                    *ngIf="this.activeRowDetails.status == 'APPROVED'">Approved<mat-icon inline="true">
+                        check_circle_outline</mat-icon>
+                </button>
+                <button mat-raised-button class="reject-btn" *ngIf="this.activeRowDetails.status == 'REJECTED'">Rejected
+                    <mat-icon inline="true">clear
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+        <div style="background-color: #f5f5f5;">
+            <div style="margin: 15px;" class="row"
+                *ngFor="let question of viewObjectionDetails.questions; let i = index">
+                <span>{{viewObjectionDetails.clientId}}.&nbsp;<span
+                        [innerHTML]="question.questionsDescription"></span><img *ngIf="question.qstImage" src="{{'data:image/jpg;base64,' + question.qstImage}}" /></span>
+                <div style="margin: 5px;" *ngFor="let opt of question.options">
+                    <ng-container *ngIf="multipleAnswerAction">
+                        <mat-checkbox id="checkBox{{opt.optionId}}" *ngIf="question.language=='ENGLISH' || question.firstLanguage"
+                            (change)="modifyAnswer($event.checked,viewObjectionDetails.objquesId, opt.optionId,opt.optionDescription,false)"
+                            [checked]="opt?.multipleAnswerKeyChecked"
+                            [disabled]="this.activeRowDetails.status != 'PENDING_APPROVAL'"></mat-checkbox>
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" />
+                        <span style="color:blue" *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing
+                            Answer</span>
+                        <span style="color:rgb(24, 160, 24)"
+                            *ngIf="(opt.modAnsId == opt.optionId && this.activeRowDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+
+                    </ng-container>
+                    <ng-container *ngIf="answerKeyAction">
+                        <mat-radio-button id="radio{{opt.optionId}}" *ngIf="question.language=='ENGLISH' || question.firstLanguage"
+                            (change)="modifyAnswer($event,viewObjectionDetails.objquesId, opt.optionId,opt.optionDescription,true)"
+                            [checked]="opt?.answerKeyChangeChecked"
+                            [disabled]="this.activeRowDetails.status != 'PENDING_APPROVAL'"></mat-radio-button>
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" /> <span style="color:blue"
+                            *ngIf="(opt?.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span>
+                        <span style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && this.activeRowDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+
+                    </ng-container>
+                    <ng-container *ngIf="!multipleAnswerAction && !answerKeyAction">
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" /> <span style="color:blue"
+                            *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span> <span
+                            style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && this.activeRowDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <ng-container [formGroup]="approvalEntryForm">
+            <div class="container mt-2">
+                <div class="row">
+                    <mat-form-field appearance="outline" class="col-4">
+                        <mat-label>Action</mat-label>
+                        <mat-select formControlName="action" (selectionChange)="selectAction($event)">
+                            <mat-option *ngFor="let action of actionList" [value]="action">{{action}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-4">
+                        <mat-label>Subject</mat-label>
+                        <mat-select formControlName="subject">
+                            <mat-option *ngFor="let subject of subjectList" value={{subject}}>{{subject}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-2">
+                        <mat-label>Standard</mat-label>
+                        <mat-select formControlName="standard">
+                            <mat-option *ngFor="let std of standardList" value={{std}}>{{std}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-2">
+                        <mat-label>Page No</mat-label>
+                        <input matInput formControlName="pageNumber" maxlength="6" />
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <div class="col-6 align-self-center formFileLg" style="margin-bottom: 10px;">
+                        <ng-container
+                            *ngIf="currentUserRole == USER_ROLES.SME && this.activeRowDetails.status == 'PENDING_APPROVAL'">
+                            <span
+                                *ngIf="currentUserRole == USER_ROLES.SME && this.activeRowDetails.status == 'PENDING_APPROVAL'"
+                                class="text-secondary">Supporting documents (.pdf,.doc,.jpeg,png) </span>
+                            <br>
+                            <label for="files" class="btn" (click)="fileUploadField.value=''">Choose Files</label>
+                            <input style="visibility:hidden;" type="file" id="files"
+                                accept=".jpeg,.png,.doc,.pdf,jpg,.docx" #fileUploadField multiple
+                                (change)="fileUpload($event)" />
+                        </ng-container>
+                        <div *ngIf="currentUserRole != USER_ROLES.SME || this.activeRowDetails.status != 'PENDING_APPROVAL'"
+                            style="padding-left: 7px;">Uploaded File:
+                            <ng-container *ngFor="let file of file">
+                                <img *ngIf="file.type=='jpg' || file.type=='jpeg'" matTooltip="Download {{file.name}}"
+                                    src="assets/img/jpg.png" class="img" alt="excelImg"
+                                    (click)="fileDownload(file.docPath)">
+                                <img *ngIf="file.type=='pdf'" matTooltip="Download {{file.name}}"
+                                    src="assets/img/pdf.png" class="img" alt="excelImg"
+                                    (click)="fileDownload(file.docPath)">
+                                <img *ngIf="file.type=='doc' || file.type=='docx'" matTooltip="Download {{file.name}}"
+                                    src="assets/img/word.png" class="img" alt="excelImg"
+                                    (click)="fileDownload(file.docPath)">
+                                <img *ngIf="file.type=='png'" matTooltip="Download {{file.name}}"
+                                    src="assets/img/png.jfif" class="img" alt="excelImg"
+                                    (click)="fileDownload(file.docPath)">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <mat-form-field appearance="outline" class="col-6 mt-3 align-self-end">
+                        <mat-label>Remarks</mat-label>
+                        <textarea formControlName="remarks" matInput cdkTextareaAutosize cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="5" maxlength="250"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </ng-container>
+        <div class="example-button-row"
+            *ngIf="currentUserRole != USER_ROLES.ADMIN && this.activeRowDetails.status == 'PENDING_APPROVAL'">
+            <ng-container *ngFor="let file of file">
+                <img *ngIf="file.type=='image/jpg' || file.type=='image/jpeg' || file.type=='jpg' || file.type=='jpeg'"
+                    matTooltip={{file.name}} src="assets/img/jpg.png" class="img" alt="excelImg"
+                    (click)="fileDownload(file.docPath)">
+                <img *ngIf="file.type=='application/pdf'|| file.type=='pdf'" matTooltip={{file.name}}
+                    src="assets/img/pdf.png" class="img" alt="excelImg" (click)="fileDownload(file.docPath)">
+                <img *ngIf="file.type=='doc' || file.type=='docx'|| file.type=='application/msword' || file.type=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                    matTooltip={{file.name}} src="assets/img/word.png" class="img" alt="excelImg"
+                    (click)="fileDownload(file.docPath)">
+                <img *ngIf="file.type=='image/png' || file.type=='png'" matTooltip={{file.name}}
+                    src="assets/img/png.jfif" class="img" alt="excelImg" (click)="fileDownload(file.docPath)">
+                <mat-icon class="color" matPrefix style="cursor: pointer;"
+                    (click)="removeFile(file.name,file.docPath,viewObjectionDetails.objquesId)">close
+                </mat-icon>
+            </ng-container>
+            <button mat-raised-button class="approve-btn" [disabled]="!approvalEntryForm.valid || isApproveBtnDisabled"
+                (click)="btnApproveDraft('approve')">Approve<mat-icon class="float-end" inline="true">
+                    check_circle_outline</mat-icon></button>
+            <button mat-raised-button class="reject-btn" [disabled]="!approvalEntryForm.valid || isRejectBtnDisabled"
+                (click)="btnReject('Reject','Cancel')">Reject<mat-icon inline="true">clear
+                </mat-icon></button>
+            <a mat-raised-button color="primary" (click)="btnApproveDraft('draft')">Save as Draft<mat-icon inline="true"
+                    class="ps-2">
+                    drafts</mat-icon>
+            </a>
+        </div>
+    </div>
+    <ng-container *ngIf="viewObjectionDetails?.candidateObjctions?.length >= 0">
+        <app-objection-table-candidate [viewDetails]=viewObjectionDetails?.candidateObjctions>
+        </app-objection-table-candidate>
+    </ng-container>
+</div>

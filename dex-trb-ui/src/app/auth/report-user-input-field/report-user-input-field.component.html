@@ -1,0 +1,50 @@
+<div class="edit card_style">
+    <div class="row">
+        <ng-container [formGroup]="userInputForm">
+            <mat-form-field appearance="outline" class="col-3">
+                <mat-label>Subject</mat-label>
+                <mat-select formControlName="subject">
+                    <mat-option *ngFor="let sub of subjectsCollection" value="{{sub}}">{{sub}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader =='SMEs Daily Report'" appearance="outline" class="col-2">
+                <mat-label>SME Name</mat-label>
+                <input matInput formControlName="smeName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-2">
+                <mat-label>Exam Name</mat-label>
+                <mat-select formControlName="examName" (selectionChange)="changeDate($event)">
+                    <mat-option *ngFor="let exam of examCollection" value="{{exam}}">{{exam}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Objection Summary Report'" appearance="outline" class="col-2">
+                <mat-label>Exam Date</mat-label>
+                <mat-select formControlName="date" (selectionChange)="changeBatch($event)">
+                    <mat-option *ngFor="let count of dateCollection" value="{{count}}">{{count}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Objection Summary Report'" appearance="outline" class="col-2">
+                <mat-label>Batch Time</mat-label>
+                <mat-select formControlName="batch">
+                    <mat-option *ngFor="let item of batchCollection" value="{{item}}">{{item}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader =='Final Objection Detailed Report'" appearance="outline" class="col-2">
+                <mat-label>Master QP</mat-label>
+                <input matInput formControlName="masterQP" />
+            </mat-form-field>
+
+            <div [ngClass]="{'col-11':titleHeader !='Objection Summary Report'}" class="example-button-row col-3">
+                <button mat-raised-button color="primary" (click)="getSearchInput()">Search<mat-icon inline="true">
+                        search</mat-icon></button>
+                <button mat-raised-button class="clearBtn" (click)="clearSearch()">Clear<mat-icon inline="true">clear
+                    </mat-icon></button>
+            </div>
+        </ng-container>
+    </div>
+</div>

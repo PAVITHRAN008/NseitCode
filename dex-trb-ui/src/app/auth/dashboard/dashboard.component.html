@@ -1,0 +1,178 @@
+<div class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Dashboard"></app-title-header>
+    <app-dashboard-progress-button></app-dashboard-progress-button>
+    <div *ngIf="isAdminRole"
+        style="border: 1px solid rgb(172, 168, 168);padding:0% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px;margin-top: 30px; background-color: #FFFF;">
+        <div class="card_style mt-3">
+            <ng-container *ngIf="(tableOneData?.length && !noRecordMessage); else elseTemplate">
+                <div class="row">
+                    <div class="col-6 mt-3">
+                        <app-table-title-header tableHeader="Subject Details"></app-table-title-header>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <div class="float-end">
+                            <mat-form-field appearance="outline">
+                                <mat-icon matPrefix>search</mat-icon>
+                                <mat-label>Search</mat-label>
+                                <input matInput (keyup)="applyFilterOne($event)" placeholder="Search here..." />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <table mat-table [dataSource]="dataSourceOne" matSortStart="desc" class="mat-elevation-z8"
+                    style="width: 100%; box-shadow: 0px 0px 1px 1px lightgrey;" matTableExporter
+                    #exporterOne="matTableExporter" matSort #TableOneMatSort="matSort">
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>S.No</th>
+                        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="subject">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Subject</th>
+                        <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="uniqueQuestions">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Unique Questions</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.uniqueQuestions}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="totalQuestions">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Objections</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.totalQuestions}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="approved">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Approved</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.approved}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rejected">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Rejected</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.rejected}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pendingApproval">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Pending Approval</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.pendingApproval}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pendingAllocation">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Pending Allocation</th>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.pendingAllocation}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsOne"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsOne"></tr>
+                </table>
+                <div class="row">
+                    <div class="col-6 ">
+                        <div class="col-1 mt-3" matTooltip="Download Excel" (click)="importAsXlsxOne()">
+                            <img src="assets/img/downloadExcel.png" class="img" alt="excelImg">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <mat-paginator #TableOnePaginator="matPaginator" [ngStyle]="{'color':'blue'}" [pageSize]="4"
+                            [pageSizeOptions]="[3,5, 10, 25, 100]">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <div class="alert alert-primary" role="alert" *ngIf="noRecordMessage">
+                    No Records found for this subject!
+                </div>
+                <ngx-skeleton-loader *ngIf="loaderOne" [theme]="{'background-color': 'darkgrey'}" count="5" appearance="line" animation="progress">
+                </ngx-skeleton-loader>
+            </ng-template>
+        </div>
+    </div>
+
+    <div
+        style="border: 1px solid rgb(172, 168, 168);padding:0% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px;margin-top: 30px; background-color: #FFFF;">
+        <div class="card_style mt-3">
+            <ng-container *ngIf="(tableTwoData?.length && !noRecordMessage); else elseTemplate">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-6 mt-3">
+                            <app-table-title-header tableHeader="SME Details"></app-table-title-header>
+                        </div>
+                        <div *ngIf="isAdminRole" class="col-6 mt-2">
+                            <div class="float-end">
+                                <mat-form-field appearance="outline">
+                                    <mat-icon matPrefix>search</mat-icon>
+                                    <mat-label>Search</mat-label>
+                                    <input matInput (keyup)="applyFilterTwo($event)" placeholder="Search here..." />
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <table mat-table [dataSource]="dataSourceTwo" class="mat-elevation-z8"
+                        style="width: 99%; box-shadow: 0px 0px 1px 1px lightgrey;" matTableExporter
+                        #exporterTwo="matTableExporter" matSort #TableTwoMatSort="matSort">
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>S.No</th>
+                            <td mat-cell *matCellDef="let row ;let i= index">{{row.id}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="subject">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Subject</th>
+                            <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="smeName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>SME Name</th>
+                            <td mat-cell *matCellDef="let row"> {{row.smeName}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="allocatedQuestions">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>AllocatedQuestions</th>
+                            <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.allocatedQuestions}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="approved">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Approved</th>
+                            <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.approved}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="rejected">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rejected</th>
+                            <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.rejected}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pendingApproval">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Pending Approval</th>
+                            <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.pendingApproval}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="expiryDays">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Validity (days)</th>
+                            <td mat-cell *matCellDef="let row" style="text-align: center;"> {{row.expiryDays}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsTwo"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsTwo"></tr>
+                    </table>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="col-1 mt-3" matTooltip="Download Excel" (click)="importAsXlsxTwo()">
+                                <img src="assets/img/downloadExcel.png" class="img" alt="excelImg">
+                            </div>
+                        </div>
+                        <div *ngIf="isAdminRole" class="col-6">
+                            <mat-paginator #TableTwoPaginator="matPaginator" [ngStyle]="{'color':'blue'}" [pageSize]="4"
+                                [pageSizeOptions]="[3,5, 10, 25, 100]">
+                            </mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <div class="alert alert-primary" role="alert" *ngIf="noRecordMessage">
+                    No Records found for this subject!
+                </div>
+                <ngx-skeleton-loader *ngIf="loader" [theme]="{'background-color': 'darkgrey'}"  count="5" appearance="line" animation="progress">
+                </ngx-skeleton-loader>
+            </ng-template>
+        </div>
+    </div>
+</div>

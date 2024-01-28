@@ -1,0 +1,32 @@
+<mat-card style="box-shadow: none;">
+    <mat-card-header>
+        <mat-card-title align="center" style="margin-top: 10px;">Log In</mat-card-title>
+        <mat-card-subtitle align="center" style="margin-top: 5px;">Please enter User Id and Password to continue
+        </mat-card-subtitle>
+    </mat-card-header>
+    <form [formGroup]="userInputForm">
+        <mat-card-content fxLayout="column">
+            <div class="column">
+                <mat-form-field appearance="outline" class="col-12">
+                    <mat-label>User Id</mat-label>
+                    <input matInput placeholder="Enter your user id" formControlName="userName" required>
+                </mat-form-field>
+                <p *ngIf="usernameErrorMessage" class="error-message-text mb-0" style="color: red;">
+                    &#160;{{usernameErrorMessage}}</p>
+                <mat-form-field appearance="outline" class="col-12">
+                    <mat-label>Password</mat-label>
+                    <input type="password" [type]="hide ? 'password' : 'text'" matInput
+                        placeholder="Enter your password" formControlName="password" required>
+                    <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </mat-form-field>
+                <p *ngIf="passwordErrorMessage" class="error-message-text mb-0" style="color: red;">
+                    &#160;{{passwordErrorMessage}}{{authenticationErrorMessage}}</p>
+            </div>
+        </mat-card-content>
+    </form>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="loginpage_butn" color="primary" (click)="login()">Login<mat-icon inline="true">
+                keyboard_arrow_right
+            </mat-icon></button>
+    </mat-card-actions>
+</mat-card>

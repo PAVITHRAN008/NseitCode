@@ -1,0 +1,60 @@
+<div class="edit card_style">
+    <div class="row">
+        <ng-container [formGroup]="userInputForm">
+            <mat-form-field appearance="outline" class="col-3" *ngIf="currentUserRole != USER_ROLES.ADMIN">
+                <mat-label>Subject</mat-label>
+                <input matInput formControlName="subjectSME" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="currentUserRole != USER_ROLES.SME"
+                [ngClass]="{'col-3':titleHeader !='Allocation'}" class="col-2">
+                <mat-label>Subject</mat-label>
+                <mat-select formControlName="subject">
+                    <mat-option *ngFor="let sub of subjectsCollection" value="{{sub}}">{{sub}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Objection Tracking' && titleHeader !='Objection Approval'"
+                appearance="outline" class="col-2">
+                <mat-label>SME ID</mat-label>
+                <input matInput formControlName="smeId" />
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Admin Management'" appearance="outline" class="col-2">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option *ngFor="let sts of statusCollection" value="{{sts}}">{{sts}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Admin Management'" appearance="outline" class="col-2">
+                <mat-label>Exam Name</mat-label>
+                <mat-select formControlName="examName" (selectionChange)="changeDate($event)">
+                    <mat-option *ngFor="let exam of examCollection" value="{{exam}}">{{exam}}</mat-option>
+                </mat-select>
+            </mat-form-field> 
+
+            <mat-form-field *ngIf="titleHeader !='Admin Management'" appearance="outline" class="col-2">
+                <mat-label>Exam Date</mat-label>
+                <mat-select formControlName="date" (selectionChange)="changeBatch($event)">
+                    <mat-option *ngFor="let count of dateCollection" value="{{count}}">{{count}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="titleHeader !='Admin Management'" appearance="outline" class="col-2">
+                <mat-label>Batch Time</mat-label>
+                <mat-select formControlName="batch">
+                    <mat-option *ngFor="let item of batchCollection" value="{{item}}">{{item}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div [ngClass]="{'col-12':titleHeader =='Allocation','col-11':titleHeader =='Objection Approval'}"
+                class="example-button-row col-3">
+                <button mat-raised-button color="primary" (click)="getSearchInput()">Search<mat-icon inline="true">
+                        search</mat-icon></button>
+                <button mat-raised-button class="clearBtn" (click)="clearSearch()">Clear<mat-icon inline="true">clear
+                    </mat-icon></button>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="mt-mr-mb-ml-50">
+    <div class="row">
+        <div class="col-6 mt-2">
+            <app-title-header titleHeader="Admin Management"></app-title-header>
+        </div>
+        <div class="col-6 mt-3 ">
+            <div class="float-end">
+                <a mat-raised-button color="primary" (click)="navigateToAdminManagement()">Back<mat-icon inline="true">
+                        keyboard_arrow_left</mat-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div
+        style="border: 1px solid rgb(172, 168, 168);padding:0% 2% 2% 2%;box-shadow: 1px 1px 1px 1px #d3cfcf;border-radius: 8px;margin-top:10px;background-color: #FFFF;">
+        <div class="row">
+            <div class="col-5 mt-3">
+                <app-table-title-header tableHeader="Add User"></app-table-title-header>
+            </div>
+            <div class="col-7 mt-2">
+                <div class="float-end"><button mat-stroked-button (click)="downloadFile()" color="accent"
+                        matTooltip="Click to  download">Excel Format</button>
+                    <input (change)="selectFile($event)" type="file" accept=".csv" />
+                    <button mat-raised-button (click)="uploadFile(file)" color="primary">Bulk upload<mat-icon
+                            inline="true">file_copy
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <form [formGroup]="userForm">
+            <tr formArrayName="userDetails" *ngFor="let userDetail of userFields().controls; let i = index">
+                <div [formGroupName]="i" class="row">
+                    <mat-form-field appearance="outline" class="col-3">
+                        <mat-label>SME Name</mat-label>
+                        <input matInput formControlName="name" [id]="'name' + i"
+                            onkeydown="return /[a-z]/i.test(event.key)" maxlength="25" autocomplete="off" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-2">
+                        <mat-label>SME No</mat-label>
+                        <input matInput formControlName="identityNumber" [id]="'identityNumber' + i" type="text"
+                            (keypress)="numberOnly($event)" autocomplete="off">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-3">
+                        <mat-label>Subject</mat-label>
+                        <mat-select formControlName="subject" [id]="'subject' + i">
+                            <mat-option *ngFor="let sub of subjectsCollection" value="{{sub}}">{{sub}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-3">
+                        <mat-label>Validity</mat-label>
+                        <input matInput formControlName="expiryDate" [readonly]="inputReadonly" [id]="'' + i"
+                            [matDatepicker]="picker" [min]="today" autocomplete="off" />
+                        <mat-hint>DD/MM/YYYY</mat-hint>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <button mat-icon-button color="primary" *ngIf="i>0" (click)="removeUser(i)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="i==i" color="primary" type="button" (click)="addUser()">
+                        <mat-icon>add
+                        </mat-icon>
+                    </button>
+                </div>
+            </tr>
+        </form>
+    </div>
+    <div class="example-button-row col-2">
+        <p *ngIf="addUserErrorMessage" class="error-message-text mb-0" style="color: red;">
+            &#160;{{addUserErrorMessage}}</p>
+        <button mat-raised-button (click)="sendData()" color="primary">Submit<mat-icon class="float-end" inline="true">
+                assignment_turned_in
+            </mat-icon>
+        </button>
+        <button mat-raised-button class="clearBtn" (click)="navigateToAdminManagement()">Cancel<mat-icon inline="true">
+                clear
+            </mat-icon></button>
+    </div>
+</div>

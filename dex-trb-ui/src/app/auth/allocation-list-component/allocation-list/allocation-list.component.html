@@ -1,0 +1,119 @@
+<div class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Allocation"></app-title-header>
+    <app-user-input-field titleHeader="Allocation" (sendDataToChild)="getChildFormData($event)"></app-user-input-field>
+    <div class="card_style mt-3">
+        <div [id]="'pdf'+i" *ngFor="let item of items; let i=index">
+            <h1>{{ item.clientId }}</h1>
+        </div>
+        <ng-container *ngIf="(tableData?.length && !noRecordMessage); else elseTemplate">
+            <div class="row">
+                <div class="col-6 mt-3">
+                    <app-table-title-header tableHeader="Allocation Details"></app-table-title-header>
+                </div>
+                <ng-container [formGroup]="searchForm">
+                    <div class="col-6 mt-2">
+                        <div class="float-end">
+                            <mat-form-field appearance="outline">
+                                <mat-icon matPrefix>search</mat-icon>
+                                <mat-label>Search</mat-label>
+                                <input matInput formControlName="search" (keyup)="applyFilterOne($event)"
+                                    placeholder="Search here..." />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                style="width: 100%; box-shadow: 0px 0px 1px 1px lightgrey;" matTableExporter
+                #exporter="matTableExporter" [hiddenColumns]="[0]" matSort>
+                <ng-container matColumnDef="checkBox">
+                    <th class="cell-width-20" mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle($event) : null" [checked]="selection.hasValue()">
+                        </mat-checkbox>
+                    </th>
+                    <td class="cell-width-20" mat-cell *matCellDef="let rowCheckBox">
+                        <mat-checkbox (change)=" selectRow(rowCheckBox,$event)"
+                            [checked]="selection.isSelected(rowCheckBox)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="sNo">
+                    <th class="cell-width-60 center" mat-header-cell *matHeaderCellDef mat-sort-header>S.No</th>>
+                    <td class="cell-width-60" mat-cell *matCellDef="let rowSNo; let i = index;">
+                        {{rowSNo.sNo}}</td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                    <th class="cell-width-80" mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                    <td class="cell-width-150" mat-cell *matCellDef="let date"> {{date.date}} </td>
+                </ng-container>
+                <ng-container matColumnDef="batch">
+                    <th class="cell-width-80" mat-header-cell *matHeaderCellDef mat-sort-header>Batch</th>
+                    <td class="cell-width-150" mat-cell *matCellDef="let batch"> {{batch.batch}} </td>
+                </ng-container>
+                <ng-container matColumnDef="mdmName">
+                    <th class="cell-width-150" mat-header-cell *matHeaderCellDef mat-sort-header>Exam Name</th>
+                    <td class="cell-width-80" mat-cell *matCellDef="let moduleName"> {{moduleName.mdmName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="masterQP">
+                    <th class="cell-width-80" mat-header-cell *matHeaderCellDef mat-sort-header> Master QP No</th>
+                    <td class="cell-width-60" mat-cell *matCellDef="let rowClientId" style="text-align: center;">
+                        {{rowClientId.masterQP}} </td>
+                </ng-container>
+                <ng-container matColumnDef="questions">
+                    <th class="cell-width-380" mat-header-cell *matHeaderCellDef mat-sort-header> Questions for
+                        {{selectedSubject}} </th>
+                    <td class="cell-width-380" mat-cell *matCellDef="let rowQuestions"
+                        [innerHTML]="rowQuestions.questions"></td>
+                </ng-container>
+
+                <ng-container matColumnDef="questionImage">
+                    <th mat-header-cell class="cell-width-380" *matHeaderCellDef mat-sort-header> Question Image</th>
+                    <td mat-cell class="cell-width-380" *matCellDef="let rowQuestionImage"><img *ngIf="rowQuestionImage.questionImage" style="display:block;" width="100%" height="100%" src="{{'data:image/png;base64,' + rowQuestionImage.questionImage}}" />
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="smeName">
+                    <th class="cell-width-100" mat-header-cell *matHeaderCellDef mat-sort-header>SME Name</th>
+                    <td class="cell-width-80" mat-cell *matCellDef="let rowSmeName"> {{rowSmeName.name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th class="cell-width-100" mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                    <td class="cell-width-80" mat-cell *matCellDef="let rowStatus">
+                        <span
+                            [ngClass]="{'bg-success': rowStatus.status == 'ALLOCATED','bg-secondary': rowStatus.status == 'YET_TO_ALLOCATE'}"
+                            style="color: white;" class="yet_btn">{{rowStatus.status}}</span>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsOne"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsOne"></tr>
+            </table>
+            <div class="row">
+                <div class="col-1 mt-3" matTooltip="Download Excel" (click)="importAsXlsx()">
+                    <img src="assets/img/downloadExcel.png" class="img" alt="excelImg">
+                </div>
+                <div class="col-6 mt-2">
+                    <div class="example-button-row float-end">
+                        <button mat-raised-button class="failed"
+                            (click)="removeAllocationDialog('Remove','Cancel')">Remove
+                            Allocation</button>
+                        <button mat-raised-button color="primary"
+                            (click)="addAllocationDialog('Submit','Cancel')">Add/Modify
+                            Allocation</button>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <mat-paginator #TableOnePaginator="matPaginator" class="float-start" [ngStyle]="{'color':'blue'}"
+                        (page)="getData($event)" [pageSize]="currentPageSize" [pageSizeOptions]="paginateArray">
+                    </mat-paginator>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <div class="alert alert-primary" role="alert" *ngIf="noRecordMessage">
+                No Records found for this subject!
+            </div>
+            <ngx-skeleton-loader *ngIf="loader" [theme]="{'background-color': 'darkgrey'}"  count="5" appearance="line" animation="progress">
+            </ngx-skeleton-loader>
+        </ng-template>
+    </div>
+</div>

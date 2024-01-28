@@ -1,0 +1,210 @@
+<div class="mt-mr-mb-ml-50">
+    <app-title-header titleHeader="Final Objection Detailed Report"></app-title-header>
+    <app-report-user-input-field titleHeader="Final Objection Detailed Report"
+        (sendDataToChild)="getChildFormData($event)">
+    </app-report-user-input-field>
+    <ng-container *ngIf="(tableDatas?.length && !noRecordMessage); else elseTemplate">
+        <div class="card_style mt-3">
+            <div class="row">
+                <div class="col-4">
+                    <div class="col-1 mt-2" style="margin:20px;" matTooltip="Download Text to PDF">
+                        <button mat-raised-button color="primary" [disabled]="tableDatas?.length==0 || disabledDownloadBtn"
+                            (click)="downloadTextToPdf()">Download Text to PDF</button>
+                    </div>
+                </div>
+                <div class="col-4 mt-3">
+                    Total Questions : {{tableDatas.length}}
+                </div>
+                <div class="col-4 mt-3" matTooltip="Download Html to PDF">
+                    <button mat-raised-button color="primary" [disabled]="tableDatas?.length==0 || disabledDownloadBtn"
+                    (click)="downloadHtmlToPdf()">Download Html to PDF</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #elseTemplate>
+        <div class="card_style mt-3">
+            <div class="alert alert-primary" role="alert" *ngIf="noRecordMessage">
+                No Records found!
+            </div>
+            <ngx-skeleton-loader *ngIf="loader" [theme]="{'background-color': 'darkgrey'}" count="1" appearance="line"
+                animation="progress">
+            </ngx-skeleton-loader>
+        </div>
+    </ng-template>    
+</div>
+<div class="mt-mr-mb-ml-50" style="margin: 20px; font-weight: 600;" [id]="'pdf'+i" *ngFor="let viewDetails of tableDatas; let i=index">
+    <div class="row justify-content-center">
+        <img class="mb-1 mt-2" src={{logoImage}} style="width: 109px; height: 80px;" />
+    </div>
+    <div class="row">
+        <div class="col-6 mt-2">
+            <app-title-header titleHeader="Objection Status"></app-title-header>
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="row" style="margin:10px;">
+            <div class="col-3">
+                <span>Module Name: {{viewDetails.moduleName}}</span>
+            </div>
+            <div class="col-2">
+                <span>Date: {{viewDetails.examDate}}</span>
+            </div>
+            <div class="col-2">
+                <span>Batch: {{viewDetails.examBatch}}</span>
+            </div>
+            <div class="col-3">
+                <span>Subject: {{viewDetails.subject}}</span>
+            </div>
+            <div class="col-2">
+                <span>Master QP: {{viewDetails.clientId}}</span>
+            </div>
+        </div>
+        <div class="row">
+            <div style="font-size: 16px; margin: 11px;" class="col-10 align-self-center"><span
+                    style="font-weight:500">Subject:&nbsp;</span>{{viewDetails.subject}} </div>
+            <div class="col-1 mt-1 ml-3 mb-2 float-end">
+                <button mat-raised-button class="approve-btn" *ngIf="viewDetails.status == 'APPROVED'">Approved
+                    <!-- <mat-icon
+                        inline="true">
+                        check_circle_outline</mat-icon> -->
+                </button>
+                <button mat-raised-button class="reject-btn" *ngIf="viewDetails.status == 'REJECTED'">Rejected
+                    <!-- <mat-icon inline="true">clear
+                    </mat-icon> -->
+                </button>
+                <button mat-raised-button *ngIf="viewDetails.status != 'REJECTED' && viewDetails.status != 'APPROVED' ">
+                    {{viewDetails.status}}
+                    <!-- <mat-icon inline="true">clear
+                    </mat-icon> -->
+                </button>
+            </div>
+        </div>
+        <div style="background-color: #f5f5f5;">
+            <div style="margin: 15px;" class="row" *ngFor="let question of viewDetails.questions; let i = index">
+                <span>{{viewDetails.clientId}}.&nbsp;<span [innerHTML]="question.questionsDescription"></span></span>
+                <div style="margin: 5px;" *ngFor="let opt of question.options">
+                    <!-- <ng-container *ngIf="viewDetails.action == multipleAnswerKey">
+                        <mat-checkbox *ngIf="question.language=='ENGLISH'" [checked]="opt.modAnsId == opt.optionId"
+                            [disabled]="true"></mat-checkbox>
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span>
+                        <span style="color:blue" *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing
+                            Answer</span>
+                        <span style="color:rgb(24, 160, 24)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+                    </ng-container>
+                    <ng-container *ngIf="viewDetails.action == answerKeyChange">
+                        <mat-radio-button *ngIf="question.language=='ENGLISH'" [checked]="opt.modAnsId == opt.optionId"
+                            [disabled]="true"></mat-radio-button>
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span> <span style="color:blue"
+                            *ngIf="(opt?.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span>
+                        <span style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+
+                    </ng-container>
+                    <ng-container
+                        *ngIf="viewDetails.action != answerKeyChange && viewDetails.action != multipleAnswerKey">
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span> <span style="color:blue"
+                            *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span> <span
+                            style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+                    </ng-container> -->
+                    <ng-container *ngIf="viewDetails.action == multipleAnswerKey">
+                        <!-- <mat-checkbox id="checkBox{{opt.optionId}}"
+                            *ngIf="question.language=='ENGLISH' || question.firstLanguage"
+                            [checked]="opt?.multipleAnswerKeyChecked" [disabled]="true"></mat-checkbox> -->
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img
+                            *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" />
+                        <span style="color:blue" *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing
+                            Answer</span>
+                        <span style="color:rgb(24, 160, 24)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+
+                    </ng-container>
+                    <ng-container *ngIf="viewDetails.action == answerKeyChange">
+                        <!-- <mat-radio-button id="radio{{opt.optionId}}"
+                            *ngIf="question.language=='ENGLISH' || question.firstLanguage"
+                            [checked]="opt?.answerKeyChangeChecked" [disabled]="true"></mat-radio-button> -->
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img
+                            *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" /> <span
+                            style="color:blue" *ngIf="(opt?.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span>
+                        <span style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+
+                    </ng-container>
+                    <ng-container
+                        *ngIf="viewDetails.action != multipleAnswerKey && viewDetails.action != answerKeyChange">
+                        {{opt.option}}.&nbsp;<span [innerHTML]="opt.optionDescription"></span><img
+                            *ngIf="opt.qstOptionImage" src="{{'data:image/jpg;base64,' + opt.qstOptionImage}}" /> <span
+                            style="color:blue" *ngIf="(opt.qstCrctAnsId == opt.optionId)">&nbsp;Existing Answer</span>
+                        <span style="color:rgb(9, 184, 9)"
+                            *ngIf="(opt.modAnsId == opt.optionId && viewDetails.status != 'PENDING_APPROVAL')">&nbsp;Modified
+                            Answer</span>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <ng-container>
+            <div class="container mt-2">
+                <div class="row">
+                    <div class="col-4">
+                        <span>Action: {{viewDetails.action}}</span>
+                    </div>
+                    <div class="col-4">
+                        <span>Subject: {{viewDetails.subject}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span>Standard: {{viewDetails.standard}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span>Page No: {{viewDetails.pageNo}}</span>
+                    </div>
+                    <!-- <div class="col-2">
+                        <span>Remarks {{viewDetails.remarks}}</span>
+                    </div> -->
+                </div>
+                <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                    <span>Remarks: {{viewDetails.remarks}}</span>
+                </div>
+            </div>
+        </ng-container>
+        <!-- <div class="example-button-row"
+            *ngIf="currentUserRole != USER_ROLES.ADMIN && viewDetails.status == 'PENDING_APPROVAL'">
+            <ng-container *ngFor="let file of file">
+                <img *ngIf="file.type=='image/jpg' || file.type=='image/jpeg' || file.type=='jpg' || file.type=='jpeg'"
+                    matTooltip={{file.name}} src="assets/img/jpg.png" class="img" alt="excelImg"
+                    (click)="fileDownload(file.name)">
+                <img *ngIf="file.type=='application/pdf'|| file.type=='pdf'" matTooltip={{file.name}}
+                    src="assets/img/pdf.png" class="img" alt="excelImg" (click)="fileDownload(file.name)">
+                <img *ngIf="file.type=='doc' || file.type=='docx'|| file.type=='application/msword' || file.type=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                    matTooltip={{file.name}} src="assets/img/word.png" class="img" alt="excelImg"
+                    (click)="fileDownload(file.name)">
+                <img *ngIf="file.type=='image/png' || file.type=='png'" matTooltip={{file.name}}
+                    src="assets/img/png.jfif" class="img" alt="excelImg" (click)="fileDownload(file.name)">
+                <mat-icon class="color" matPrefix style="cursor: pointer;" (click)="removeFile(file.name)">close
+                </mat-icon>
+            </ng-container>
+            <button mat-raised-button class="approve-btn" [disabled]="!approvalEntryForm.valid || isApproveBtnDisabled"
+                (click)="btnApproveDraft('approve')">Approve<mat-icon class="float-end" inline="true">
+                    check_circle_outline</mat-icon></button>
+            <button mat-raised-button class="reject-btn" [disabled]="!approvalEntryForm.valid || isRejectBtnDisabled"
+                (click)="btnReject('Reject','Cancel')">Reject<mat-icon inline="true">clear
+                </mat-icon></button>
+            <a mat-raised-button color="primary" (click)="btnApproveDraft('draft')">Save as Draft<mat-icon inline="true"
+                    class="ps-2">
+                    drafts</mat-icon>
+            </a>
+        </div> -->
+    </div>
+    <ng-container *ngIf="viewDetails?.candidateObjctions?.length >= 0">
+        <app-objection-table-candidate  [viewDetails]=viewDetails?.candidateObjctions>
+        </app-objection-table-candidate>
+    </ng-container>
+</div>

@@ -1,0 +1,34 @@
+<mat-dialog-content>
+    <mat-toolbar style="height: 46px;
+border-radius: 5px;
+margin-bottom: 18px;color: azure;background-color: rgb(56 63 148);">{{title}}
+    </mat-toolbar>
+</mat-dialog-content>
+<ng-container [formGroup]="addAllocationForm">
+    <mat-dialog-content>
+        <mat-form-field appearance="outline" class="col-12">
+            <mat-label>Subject</mat-label>
+            <input matInput formControlName="subject" />
+        </mat-form-field>
+        <mat-form-field class="min-width100" appearance="fill">
+            <mat-icon style="font-size: 20px;
+        left: -7px;
+        bottom: 3px;
+        position: absolute;" inline="true">search</mat-icon>
+            <mat-label>User ID</mat-label>
+            <input type="text" style="margin-left: 12px" matInput [formControl]="myControl" [matAutocomplete]="auto"
+                [value]="myControl.value ? myControl.value : ''">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </mat-dialog-content>
+</ng-container>
+<mat-dialog-actions align="center" class="col-12">
+    <button mat-raised-button mat-dialog-close class="clearbtn" tabindex="-1">{{cancelButtonText}}<mat-icon
+            inline="true"> clear</mat-icon></button>
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}<mat-icon
+            inline="true">keyboard_arrow_right</mat-icon></button>
+</mat-dialog-actions>

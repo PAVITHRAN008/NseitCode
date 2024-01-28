@@ -1,0 +1,10 @@
+<mat-dialog-content>
+    <p style="padding: 20px;">
+        {{message}}
+    </p>
+</mat-dialog-content>
+<mat-dialog-actions align="center" class="col-12">
+    <button mat-raised-button mat-dialog-close tabindex="-1"
+        *ngIf="cancelButtonText!='No'">{{cancelButtonText}}</button>
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+</mat-dialog-actions>

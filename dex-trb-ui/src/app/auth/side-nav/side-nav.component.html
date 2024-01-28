@@ -1,0 +1,41 @@
+<div class="sidenav">
+    <div class="img1">
+        <img src="assets/img/trb-logo.svg">
+    </div>
+    <hr style="color: white;">
+    <a (click)="navigateToDashBoard()">
+        <mat-icon inline=true>dashboard</mat-icon> Dashboard
+    </a>
+    <ng-container *ngIf="isAdminRole">
+        <a (click)="navigateToAllocation()">
+            <mat-icon inline=true>people</mat-icon> Allocation List
+        </a>
+        <a (click)="navigateToAdminManagement()">
+            <mat-icon inline=true>admin_panel_settings</mat-icon> Admin Management
+        </a>
+    </ng-container>
+    <a (click)="navigateToApproval()">
+        <mat-icon inline=true>list</mat-icon> Objection Approval
+    </a>
+    <ng-container *ngIf="isAdminRole">
+        <a>
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header style="height: auto;">
+                    <mat-panel-title>
+                        <mat-icon inline=true>insert_drive_file</mat-icon> Reports
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <a (click)="navigateToSmeReport()">SME's Daily Report</a>
+                <a (click)="navigateToObjectionSummaryReport()">Objection Summary Report</a>
+                <a (click)=" navigateToFinalObjectionDetailedReport()">Final Objection Detailed report</a>
+                <a (click)="navigateToFinalSummaryReport()">Final Summary Report</a>
+            </mat-expansion-panel>
+        </a>
+    </ng-container>
+    <div *ngIf="isAdminRole" class="changepswdbtn">
+        <a (click)="navigateToChangePassword()">Change Password?</a>
+    </div>
+    <div class="logoutbtn">
+        <a class="btn" (click)="navigateToLogin()"><i class="fa fa-sign-out"></i> Logout</a>
+    </div>
+</div>
